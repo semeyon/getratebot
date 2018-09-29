@@ -1,0 +1,56 @@
+# ----------------------
+# IDE stuff
+# ----------------------
+.idea
+.project
+.pydevproject
+.settings
+.DS_Store
+# ----------------------
+# Generated output
+# ----------------------
+*.py[oc]
+/build
+/dist
+**/output
+**/temp
+Thumbs.db
+.sync
+/route4me-oa.test.sqlite
+/tmp
+.kube
+# ----------------------
+# Logs and caches
+# ----------------------
+*/ghostdriver.log
+/log
+.cache
+.ipynb_checkpoints
+*/**/.ipynb_checkpoints
+.pytest_cache/
+htmlcov/
+# ----------------------
+# DEV-dependencies
+# ----------------------
+**/__pycache__
+**/node_modules
+# ----------------------
+# Test/Coverage stuff
+# ----------------------
+.coverage
+coverage.xml
+# ----------------------
+# Compiled translation files
+# ----------------------
+*.mo
+# ----------------------
+# PRIVATE files
+# ----------------------
+cmake-build-debug
+# ----------------------
+# CMAKE
+# ----------------------
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
