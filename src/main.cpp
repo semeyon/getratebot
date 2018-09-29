@@ -16,7 +16,7 @@ using namespace njoy;
 int main() {
 
     string token(getenv("TOKEN"));
-    Log::info("Token: %s\n", token.c_str());
+    Log::info("Token: " + token);
 
     Bot bot(token);
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message) {
@@ -31,7 +31,7 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, content);
     });
     bot.getEvents().onAnyMessage([&bot](Message::Ptr message) {
-        Log::info("User wrote %s\n", message->text.c_str());
+        Log::info("User wrote " + message->text);
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }
@@ -39,21 +39,21 @@ int main() {
     });
 
     signal(SIGINT, [](int s) {
-        Log::info("SIGINT got\n");
+        Log::info("SIGINT got " + to_string(s));
         exit(0);
     });
 
     try {
-        printf("Bot username: %s\n", bot.getApi().getMe()->username.c_str());
+        Log::info("Bot username: " + bot.getApi().getMe()->username);
         bot.getApi().deleteWebhook();
 
         TgLongPoll longPoll(bot);
         while (true) {
-            Log::info("Long poll started\n");
+            Log::info("Long poll started");
             longPoll.start();
         }
     } catch (exception& e) {
-        Log::info("error: %s\n", e.what());
+        Log::info("error: " + string(e.what()));
     }
 
     return 0;
