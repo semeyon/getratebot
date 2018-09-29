@@ -4,18 +4,19 @@
 #include <exception>
 #include <string>
 
+#include "vendors/Log.hpp"
 #include <tgbot/tgbot.h>
-
 #include "HttpRequest.hpp"
 
 using namespace std;
 using namespace TgBot;
+using namespace njoy;
 
 
 int main() {
 
     string token(getenv("TOKEN"));
-    printf("Token: %s\n", token.c_str());
+    Log::info("Token: %s\n", token.c_str());
 
     Bot bot(token);
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message) {
@@ -30,7 +31,7 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, content);
     });
     bot.getEvents().onAnyMessage([&bot](Message::Ptr message) {
-        printf("User wrote %s\n", message->text.c_str());
+        Log::info("User wrote %s\n", message->text.c_str());
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }
@@ -38,7 +39,7 @@ int main() {
     });
 
     signal(SIGINT, [](int s) {
-        printf("SIGINT got\n");
+        Log::info("SIGINT got\n");
         exit(0);
     });
 
@@ -48,11 +49,11 @@ int main() {
 
         TgLongPoll longPoll(bot);
         while (true) {
-            printf("Long poll started\n");
+            Log::info("Long poll started\n");
             longPoll.start();
         }
     } catch (exception& e) {
-        printf("error: %s\n", e.what());
+        Log::info("error: %s\n", e.what());
     }
 
     return 0;
