@@ -4,7 +4,6 @@
 #include <exception>
 #include <string>
 
-#include <jsoncpp/json/json.h>
 #include <tgbot/tgbot.h>
 #include "vendors/Log.hpp"
 #include "HttpRequest.hpp"
@@ -19,6 +18,7 @@ int main() {
     string token(getenv("TOKEN"));
     Log::info("Token: " + token);
 
+
     Bot bot(token);
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message) {
         bot.getApi().sendMessage(message->chat->id, "Hi!");
@@ -26,13 +26,14 @@ int main() {
     bot.getEvents().onCommand("help", [&bot](Message::Ptr message) {
         bot.getApi().sendMessage(message->chat->id, "/rate USD_RUB,EUR_RUB");
     });
-    bot.getEvents().onCommand("rate", [&bot](Message::Ptr message) {
-        string url = "https://free.currencyconverterapi.com/api/v6/convert?q=USD_RUB,EUR_RUB";
+    bot.getEvents().onCommand("rate", [=](Message::Ptr message) {
+        Log::info("User wrote " + message->text);
+        string url = "https://free.currencyconverterapi.com/api/v6/convert?q=USD_RUB,EUR_RUB&compact=ultra";
         string content = HttpRequest::get(&url);
         bot.getApi().sendMessage(message->chat->id, content);
     });
     bot.getEvents().onAnyMessage([&bot](Message::Ptr message) {
-        Log::info("User wrote " + message->text);
+//        Log::info("User wrote " + message->text);
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }

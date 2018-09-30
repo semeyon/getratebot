@@ -1,0 +1,1 @@
+docker run -ti --name getratebot --rm semeyon/getratebot

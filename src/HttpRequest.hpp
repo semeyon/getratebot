@@ -2,16 +2,17 @@
 // Created by Semeyon Svetliy on 21.09.2018.
 //
 
-#ifndef FEEDBRIDGE_HTTPCLIENT_H
-#define FEEDBRIDGE_HTTPCLIENT_H
+#ifndef GETRATEBOT_HTTPREQUEST_HPP
+#define GETRATEBOT_HTTPREQUEST_HPP
 
 #include <string>
 
 using namespace std;
+
 class HttpRequest {
 
     public:
         static string get(string * url);
 };
 
-#endif //FEEDBRIDGE_HTTPCLIENT_H
+#endif //GETRATEBOT_HTTPREQUEST_HPP

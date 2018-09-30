@@ -1,1 +1,1 @@
- docker build -t getratebot .
+ docker build -t semeyon/getratebot .

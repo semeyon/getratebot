@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(getratebot)
 
+set(CMAKE_CXX_STANDARD 14)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -ljsoncpp")
 set(Boost_USE_MULTITHREADED ON)
 
@@ -14,6 +16,6 @@ if (CURL_FOUND)
     add_definitions(-DHAVE_CURL)
 endif()
 
-add_executable(getratebot src/main.cpp src/HttpRequest.cpp src/vendors/Log.hpp src/Rate.hpp)
+add_executable(getratebot src/vendors/Log.hpp src/main.cpp src/HttpRequest.cpp src/Rate.hpp)
 
 target_link_libraries(getratebot /usr/local/lib/libTgBot.a /usr/local/lib/librestclient-cpp.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES})
