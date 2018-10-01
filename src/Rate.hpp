@@ -6,9 +6,9 @@
 #define GETRATEBOT_RATE_HPP
 
 
-//struct Rate {
-//    char[3] from;
-//    char[3] to;
-//    float val;
-//};
+struct Rate {
+    char from[3];
+    char to[3];
+    float val;
+};
 #endif //GETRATEBOT_RATE_HPP

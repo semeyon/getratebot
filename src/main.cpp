@@ -6,7 +6,7 @@
 
 #include <tgbot/tgbot.h>
 #include "vendors/Log.hpp"
-#include "HttpRequest.hpp"
+#include "CurrencyRatesService.hpp"
 
 using namespace std;
 using namespace TgBot;
@@ -18,6 +18,7 @@ int main() {
     string token(getenv("TOKEN"));
     Log::info("Token: " + token);
 
+    CurrencyRatesService crService;
 
     Bot bot(token);
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message) {
@@ -26,14 +27,12 @@ int main() {
     bot.getEvents().onCommand("help", [&bot](Message::Ptr message) {
         bot.getApi().sendMessage(message->chat->id, "/rate USD_RUB,EUR_RUB");
     });
-    bot.getEvents().onCommand("rate", [=](Message::Ptr message) {
+    bot.getEvents().onCommand("rate", [&bot, &crService](Message::Ptr message) {
         Log::info("User wrote " + message->text);
-        string url = "https://free.currencyconverterapi.com/api/v6/convert?q=USD_RUB,EUR_RUB&compact=ultra";
-        string content = HttpRequest::get(&url);
+        string content = crService.getMessage(&message->text);
         bot.getApi().sendMessage(message->chat->id, content);
     });
     bot.getEvents().onAnyMessage([&bot](Message::Ptr message) {
-//        Log::info("User wrote " + message->text);
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }

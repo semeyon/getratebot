@@ -16,6 +16,7 @@ if (CURL_FOUND)
     add_definitions(-DHAVE_CURL)
 endif()
 
-add_executable(getratebot src/vendors/Log.hpp src/main.cpp src/HttpRequest.cpp src/Rate.hpp)
+add_executable(getratebot src/vendors/Log.hpp src/main.cpp src/Rate.hpp
+                          src/HttpRequest.cpp src/CurrencyRatesService.cpp)
 
 target_link_libraries(getratebot /usr/local/lib/libTgBot.a /usr/local/lib/librestclient-cpp.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES})
