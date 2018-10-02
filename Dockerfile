@@ -4,7 +4,7 @@ MAINTAINER Semeyon Svetliy
 
 WORKDIR /tmp
 
-RUN apt-get install -y libspdlog-dev git-core autoconf libtool libjsoncpp-dev
+RUN apt-get install -y libspdlog-dev git-core autoconf libtool libjsoncpp-dev libfmt3-dev
 RUN git clone https://github.com/mrtazz/restclient-cpp.git
 WORKDIR /tmp/restclient-cpp
 RUN ./autogen.sh && \
