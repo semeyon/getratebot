@@ -44,18 +44,22 @@ int main() {
         exit(0);
     });
 
-    try {
+//    try {
         Log::info("Bot username: " + bot.getApi().getMe()->username);
         bot.getApi().deleteWebhook();
 
         TgLongPoll longPoll(bot);
         while (true) {
-            Log::info("Long poll started");
-            longPoll.start();
+            try {
+                Log::info("Long poll started");
+                longPoll.start();
+            } catch (exception& e) {
+                Log::info("Error: " + string(e.what()));
+            }
         }
-    } catch (exception& e) {
-        Log::info("error: " + string(e.what()));
-    }
+//    } catch (exception& e) {
+//        Log::info("error: " + string(e.what()));
+//    }
 
     return 0;
 }
