@@ -5,8 +5,8 @@
 #include <string>
 
 #include <tgbot/tgbot.h>
-#include "vendors/Log.hpp"
-#include "CurrencyRatesService.hpp"
+#include "../vendors/Log.hpp"
+#include "../CurrencyRatesService.hpp"
 
 using namespace std;
 using namespace TgBot;

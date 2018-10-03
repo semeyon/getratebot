@@ -11,8 +11,9 @@ using namespace std;
 
 class HttpRequest {
 
-    public:
-        static string get(string * url);
+public:
+    static string get(string * url);
+
 };
 
 #endif //GETRATEBOT_HTTPREQUEST_HPP

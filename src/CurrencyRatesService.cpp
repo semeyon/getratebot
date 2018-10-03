@@ -10,9 +10,9 @@
 #include "vendors/Log.hpp"
 #include "vendors/Strings.hpp"
 #include "vendors/Lambda.cpp"
-#include "HttpRequest.hpp"
+#include "services/CurrencyConverterApi.hpp"
 #include "CurrencyRatesService.hpp"
-#include "Rate.hpp"
+#include "types/Rate.hpp"
 
 
 using namespace std;
@@ -47,8 +47,7 @@ string CurrencyRatesService::getMessage(string * args) {
 //    Log::info("joinedArgs: "+joinedArgs);
 
     //Request!
-    string url = "https://free.currencyconverterapi.com/api/v6/convert?compact=ultra&q="+joinedArgs.substr(1);
-    string content = HttpRequest::get(&url);
+    string content = CurrencyConverterApi::getRates(&joinedArgs);
 
     // parse request
     Log::info("content");

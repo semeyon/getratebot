@@ -11,8 +11,8 @@ using namespace std;
 
 class CurrencyRatesService {
 
-    public:
-        string getMessage(string * args);
+public:
+    string getMessage(string * args);
 
 };
 
