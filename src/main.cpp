@@ -5,8 +5,8 @@
 #include <string>
 
 #include <tgbot/tgbot.h>
-#include "../vendors/Log.hpp"
-#include "../CurrencyRatesService.hpp"
+#include "vendors/Log.hpp"
+#include "CurrencyRatesService.hpp"
 
 using namespace std;
 using namespace TgBot;
@@ -28,15 +28,20 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, "/rate USD_RUB,EUR_RUB");
     });
     bot.getEvents().onCommand("rate", [&bot, &crService](Message::Ptr message) {
-        Log::info("User wrote " + message->text);
+        Log::info("Rate: " + message->text);
         string content = crService.getMessage(&message->text);
+        bot.getApi().sendMessage(message->chat->id, content);
+    });
+    bot.getEvents().onCommand("list", [&bot, &crService](Message::Ptr message) {
+        Log::info("List: " + message->text);
+        string content = crService.getContries();
         bot.getApi().sendMessage(message->chat->id, content);
     });
     bot.getEvents().onAnyMessage([&bot](Message::Ptr message) {
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }
-        bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
+//        bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
     });
 
     signal(SIGINT, [](int s) {
@@ -44,22 +49,18 @@ int main() {
         exit(0);
     });
 
-//    try {
-        Log::info("Bot username: " + bot.getApi().getMe()->username);
-        bot.getApi().deleteWebhook();
+    Log::info("Bot username: " + bot.getApi().getMe()->username);
+    bot.getApi().deleteWebhook();
 
-        TgLongPoll longPoll(bot);
-        while (true) {
-            try {
-                Log::info("Long poll started");
-                longPoll.start();
-            } catch (exception& e) {
-                Log::info("Error: " + string(e.what()));
-            }
+    TgLongPoll longPoll(bot);
+    while (true) {
+        try {
+            Log::info("Long poll started");
+            longPoll.start();
+        } catch (exception& e) {
+            Log::info("Error: " + string(e.what()));
         }
-//    } catch (exception& e) {
-//        Log::info("error: " + string(e.what()));
-//    }
+    }
 
     return 0;
 }

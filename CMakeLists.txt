@@ -17,7 +17,7 @@ if (CURL_FOUND)
 endif()
 
 add_executable(getratebot src/vendors/Log.hpp src/vendors/Strings.hpp
-        src/services/main.cpp src/types/Rate.hpp
+        src/main.cpp src/types/Rate.hpp
         src/services/HttpRequest.cpp src/CurrencyRatesService.cpp
                           src/services/CurrencyConverterApi.cpp
 )

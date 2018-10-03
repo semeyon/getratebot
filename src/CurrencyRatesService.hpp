@@ -13,6 +13,7 @@ class CurrencyRatesService {
 
 public:
     string getMessage(string * args);
+    string getContries();
 
 };
 

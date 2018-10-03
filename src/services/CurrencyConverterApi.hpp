@@ -13,12 +13,11 @@ class CurrencyConverterApi {
 
 public:
     static const string getRates(string * args);
-    static const string getContries(string * args);
+    static const string getContries();
 
 private:
     static const string convert_url;
     static const string countries_url;
-
 
 };
 

@@ -10,8 +10,8 @@ const string CurrencyConverterApi::getRates(string * args) {
     return HttpRequest::get(&url);
 }
 
-const string CurrencyConverterApi::getContries(string *args) {
-    string url = CurrencyConverterApi::countries_url + (*args).substr(1);
+const string CurrencyConverterApi::getContries() {
+    string url = CurrencyConverterApi::countries_url;
     return HttpRequest::get(&url);
 }
 

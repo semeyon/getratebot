@@ -21,9 +21,6 @@ using namespace njoy;
 string CurrencyRatesService::getMessage(string * args) {
 
     // Parse args
-    Log::info("getMessage");
-    Log::info(*args);
-    Log::info((*args).substr(6));
     vector<string> _args = split( args->length() > 6 ? (*args).substr(6) : *args, ',');
 
 //    Log::info(_args);
@@ -39,7 +36,6 @@ string CurrencyRatesService::getMessage(string * args) {
     auto replSlashes = [] (string s) { return reduce( s, "_", "/"); };
     _args = lambda::map(_args, replSlashes);
 
-    Log::info("lambda");
     lambda::for_each(_args, lambda_echo);
 
     string joinedArgs;
@@ -50,14 +46,14 @@ string CurrencyRatesService::getMessage(string * args) {
     string content = CurrencyConverterApi::getRates(&joinedArgs);
 
     // parse request
-    Log::info("content");
-    Log::info(content);
+//    Log::info("content");
+//    Log::info(content);
     Json::Value root;
     Json::Reader reader;
     bool parsingSuccessful = reader.parse(content.c_str(), root );
 
     // Create message
-    Log::info(args->c_str());
+//    Log::info(args->c_str());
     if ( !parsingSuccessful ) {
         Log::info("Failed to parse: " + reader.getFormattedErrorMessages());
         return "There are not such currency or services is not responding, try later";
@@ -74,6 +70,10 @@ string CurrencyRatesService::getMessage(string * args) {
             return out.length() > 0 ? out.substr(1) : "There are no currency pair";
         }
 
-//        return fmt::format("USDRUB: {0} \nEURRUB: {1}", root.get("USD_RUB", 0.0).asFloat(), root.get("EUR_RUB", 0.0).asFloat());
     }
+}
+
+string CurrencyRatesService::getContries() {
+    string content = CurrencyConverterApi::getContries();
+    return content.substr(0, 4000);
 }
