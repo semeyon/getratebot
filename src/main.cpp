@@ -5,18 +5,16 @@
 #include <string>
 
 #include <tgbot/tgbot.h>
-#include "vendors/Log.hpp"
+#include "vendors/Logger.hpp"
 #include "CurrencyRatesService.hpp"
 
 using namespace std;
 using namespace TgBot;
-using namespace njoy;
-
 
 int main() {
 
     string token(getenv("TOKEN"));
-    Log::info("Token: " + token);
+    Logger::info("Token: " + token);
 
     CurrencyRatesService crService;
 
@@ -28,12 +26,12 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, "/rate USD_RUB,EUR_RUB");
     });
     bot.getEvents().onCommand("rate", [&bot, &crService](Message::Ptr message) {
-        Log::info("Rate: " + message->text);
+        Logger::info("Rate: " + message->text);
         string content = crService.getMessage(&message->text);
         bot.getApi().sendMessage(message->chat->id, content);
     });
     bot.getEvents().onCommand("list", [&bot, &crService](Message::Ptr message) {
-        Log::info("List: " + message->text);
+        Logger::info("List: " + message->text);
         string content = crService.getContries();
         bot.getApi().sendMessage(message->chat->id, content);
     });
@@ -45,20 +43,20 @@ int main() {
     });
 
     signal(SIGINT, [](int s) {
-        Log::info("SIGINT got " + to_string(s));
+        Logger::info("SIGINT got " + to_string(s));
         exit(0);
     });
 
-    Log::info("Bot username: " + bot.getApi().getMe()->username);
+    Logger::info("Bot username: " + bot.getApi().getMe()->username);
     bot.getApi().deleteWebhook();
 
     TgLongPoll longPoll(bot);
     while (true) {
         try {
-            Log::info("Long poll started");
+            Logger::info("Long poll started");
             longPoll.start();
         } catch (exception& e) {
-            Log::info("Error: " + string(e.what()));
+            Logger::info("Error: " + string(e.what()));
         }
     }
 
