@@ -22,6 +22,7 @@ add_executable(getratebot
         src/main.cpp src/types/Rate.hpp
         src/services/HttpRequest.cpp src/CurrencyRatesService.cpp
         src/services/CurrencyConverterApi.cpp
+        src/types/Rate.hpp src/types/Rate.hpp
 )
 
 target_link_libraries(getratebot /usr/local/lib/libTgBot.a /usr/local/lib/librestclient-cpp.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES})

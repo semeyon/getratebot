@@ -8,7 +8,6 @@
 #include "HttpRequest.hpp"
 
 using namespace std;
-using namespace njoy;
 
 string HttpRequest::get(string * url) {
     Logger::info("Request for " + *url);

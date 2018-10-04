@@ -15,6 +15,11 @@ public:
     string getMessage(string * args);
     string getContries();
 
+private:
+    void parseInputArgs(string * args);
+    void parseRatesResponse(string content);
+    void parseContriesResponse(string content);
+
 };
 
 
