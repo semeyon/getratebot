@@ -23,17 +23,21 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, "Hi!");
     });
     bot.getEvents().onCommand("help", [&bot](Message::Ptr message) {
-        bot.getApi().sendMessage(message->chat->id, "/rate USD_RUB,EUR_RUB");
+        const string info = "rates - returns rate for curency pair, usage example: /rate usd/rub, rub:eur\n"
+                            "list - returns list of available curencies, and spam a channel. ";
+        bot.getApi().sendMessage(message->chat->id, info);
     });
     bot.getEvents().onCommand("rate", [&bot, &crService](Message::Ptr message) {
         Logger::info("Rate: " + message->text);
-        string content = crService.getMessage(&message->text);
+        const string content = crService.getMessage(&message->text);
         bot.getApi().sendMessage(message->chat->id, content);
     });
     bot.getEvents().onCommand("list", [&bot, &crService](Message::Ptr message) {
         Logger::info("List: " + message->text);
-        string content = crService.getContries();
-        bot.getApi().sendMessage(message->chat->id, content);
+        vector<string> messages = crService.getContriesMessages();
+        for(string content: messages){
+            bot.getApi().sendMessage(message->chat->id, content);
+        }
     });
     bot.getEvents().onAnyMessage([&bot](Message::Ptr message) {
         if (StringTools::startsWith(message->text, "/start")) {

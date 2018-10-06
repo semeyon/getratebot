@@ -6,19 +6,21 @@
 #define GETRATEBOT_CURRENCYRATESSERVICE_HPP
 
 #include <string>
+#include "types/Rate.hpp"
+#include "types/Country.hpp"
 
 using namespace std;
 
 class CurrencyRatesService {
 
 public:
-    string getMessage(string * args);
-    string getContries();
+    string getMessage(const string * args);
+    vector<string> getContriesMessages();
 
 private:
-    void parseInputArgs(string * args);
-    void parseRatesResponse(string content);
-    void parseContriesResponse(string content);
+    string parseInputArgs(const string * args);
+    tuple<int, vector<Rate>, string> parseRatesResponse(const string * content);
+    tuple<int, vector<Country>, string> parseContriesResponse(const string * content);
 
 };
 

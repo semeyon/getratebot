@@ -13,66 +13,131 @@
 #include "services/CurrencyConverterApi.hpp"
 #include "CurrencyRatesService.hpp"
 #include "types/Rate.hpp"
+#include "types/Country.hpp"
 
 
 using namespace std;
 
-string CurrencyRatesService::getMessage(string * args) {
-
-    // Parse args
+string CurrencyRatesService::parseInputArgs(const string * args) {
     vector<string> _args = split( args->length() > 6 ? (*args).substr(6) : *args, ',');
-
-//    Logger::info(_args);
-    auto lambda_echo = [](string s ) { Logger::info(s); };
     auto trimAll = [] (string s) { return trim(s); };
     _args = lambda::map(_args, trimAll);
-
-    lambda::for_each(_args, lambda_echo);
-
     auto replAll = [] (string s) { return reduce( s, "_", ":"); };
     _args = lambda::map(_args, replAll);
-
     auto replSlashes = [] (string s) { return reduce( s, "_", "/"); };
     _args = lambda::map(_args, replSlashes);
-
-    lambda::for_each(_args, lambda_echo);
-
     string joinedArgs;
     for (const auto &piece : _args) joinedArgs += ","+piece;
-//    Logger::info("joinedArgs: "+joinedArgs);
+    return joinedArgs.length() > 1 ? joinedArgs.substr(1) : joinedArgs;
+}
 
-    //Request!
-    string content = CurrencyConverterApi::getRates(&joinedArgs);
-
-    // parse request
-//    Logger::info("content");
-//    Logger::info(content);
+tuple<int, vector<Rate>, string> CurrencyRatesService::parseRatesResponse(const string * content) {
+    int status = 0;
+    string error_msg;
+    vector<Rate> rates;
     Json::Value root;
     Json::Reader reader;
-    bool parsingSuccessful = reader.parse(content.c_str(), root );
-
-    // Create message
-//    Logger::info(args->c_str());
+    bool parsingSuccessful = reader.parse(content->c_str(), root );
     if ( !parsingSuccessful ) {
         Logger::info("Failed to parse: " + reader.getFormattedErrorMessages());
-        return "There are not such currency or services is not responding, try later";
+        status = 1;
+        error_msg = "There are not such currency or services is not responding, try later";
     } else {
         if ( root.isMember("error") ) {
-            return root.get("error", "").asString();
+            status = 2;
+            error_msg = root.get("error", "").asString();
         } else {
             string out;
             for (Json::Value::const_iterator it=root.begin(); it!=root.end(); ++it) {
-//                Logger::info(it.key().asString());
-//                Logger::info(it->asFloat());
-                out += "\n" + fmt::format("1 {0} = {1} {2}", it.key().asString().substr(0, 3), it->asFloat(), it.key().asString().substr(4));
+                Rate rate = {
+                        it.key().asString().substr(0, 3),
+                        it.key().asString().substr(4),
+                        it->asFloat()
+                };
+                rates.push_back(rate);
             }
-            return out.length() > 0 ? out.substr(1) : "There are no currency pair";
+            if (rates.size() == 0){
+                status = 3;
+                error_msg = "There are no currency pair";
+            }
         }
+    }
+    tuple<int, vector<Rate>, string> response(status, rates, error_msg);
+    return response;
+}
 
+string CurrencyRatesService::getMessage(const string * args) {
+    const auto joinedArgs = this->parseInputArgs(args);
+    const string content = CurrencyConverterApi::getRates(&joinedArgs);
+    const tuple<int, vector<Rate>, string> response = this->parseRatesResponse(&content);
+    const int status = get<0>(response);
+    const vector<Rate> rates = get<1>(response);
+    const string errmsg = get<2>(response);
+    if (status > 0 ) {
+        return errmsg;
+    } else {
+        string out;
+        for(Rate rate : rates) {
+            out += "\n"  + rate.msg();
+        }
+        return out.substr(1);
     }
 }
 
-string CurrencyRatesService::getContries() {
-    string content = CurrencyConverterApi::getContries();
-    return content.substr(0, 4000);
+tuple<int, vector<Country>, string> CurrencyRatesService::parseContriesResponse(const string *content){
+    int status = 0;
+    string error_msg;
+    vector<Country> countries;
+    Json::Value root;
+    Json::Reader reader;
+    bool parsingSuccessful = reader.parse(content->c_str(), root );
+    if ( !parsingSuccessful ) {
+        Logger::info("Failed to parse: " + reader.getFormattedErrorMessages());
+        status = 1;
+        error_msg = "There are not such currency or services is not responding, try later";
+    } else {
+        if ( root.isMember("error") ) {
+            status = 2;
+            error_msg = root.get("error", "").asString();
+        } else {
+            const Json::Value& results = root["results"];
+            string out;
+            for (Json::Value::const_iterator it=results.begin(); it!=results.end(); ++it) {
+                const string key = it.key().asString();
+                const Json::Value& _c = results[key];
+                const Country country = {
+                        _c["alpha3"].asString(),
+                        _c["currencyId"].asString(),
+                        _c["currencyName"].asString(),
+                        _c["currencySymbol"].asString(),
+                        _c["name"].asString(),
+                        _c["id"].asString(),
+                };
+                countries.push_back(country);
+            }
+            if (countries.size() == 0){
+                status = 3;
+                error_msg = "There are no currency pair";
+            }
+        }
+    }
+    tuple<int, vector<Country>, string> response(status, countries, error_msg);
+    return response;
+}
+
+vector<string> CurrencyRatesService::getContriesMessages() {
+    const string content = CurrencyConverterApi::getContries();
+    const tuple<int, vector<Country>, string> response = this->parseContriesResponse(&content);
+    const int status = get<0>(response);
+    const vector<Country> countries = get<1>(response);
+    const string errmsg = get<2>(response);
+    vector<string> out;
+    if (status > 0 ) {
+        out.push_back(errmsg);
+    } else {
+        for(Country country : countries) {
+            out.push_back(country.msg());
+        }
+    }
+    return out;
 }

@@ -5,10 +5,17 @@
 #ifndef GETRATEBOT_RATE_HPP
 #define GETRATEBOT_RATE_HPP
 
+#include <string>
+#include <fmt/format.h>
 
 struct Rate {
-    char from[3];
-    char to[3];
-    float val;
+    const string from;
+    const string to;
+    const float val;
+
+public:
+    string msg() {
+        return fmt::format("1 {0} = {1} {2}", this->from, this->val, this->to);
+    }
 };
 #endif //GETRATEBOT_RATE_HPP
