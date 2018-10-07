@@ -19,10 +19,13 @@ endif()
 add_executable(getratebot
         src/vendors/Log.hpp src/vendors/Logger.cpp
         src/vendors/Strings.hpp
-        src/main.cpp src/types/Rate.hpp
+        src/main.cpp
         src/services/HttpRequest.cpp src/CurrencyRatesService.cpp
         src/services/CurrencyConverterApi.cpp
-        src/types/Rate.hpp src/types/Rate.hpp
+        src/types/Rate.hpp
+        src/types/Country.hpp
+        src/ContriesStorage.cpp
+        src/CurrencyRatesService.cpp
 )
 
 target_link_libraries(getratebot /usr/local/lib/libTgBot.a /usr/local/lib/librestclient-cpp.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES})

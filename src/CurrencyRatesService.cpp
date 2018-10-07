@@ -15,6 +15,10 @@
 #include "types/Rate.hpp"
 #include "types/Country.hpp"
 
+#define MAX_OUT_SIZE 10
+#define BITAP_DISTANCE 0
+#define MAX_SEARCH_LENGTH 2
+
 
 using namespace std;
 
@@ -125,6 +129,7 @@ tuple<int, vector<Country>, string> CurrencyRatesService::parseContriesResponse(
     return response;
 }
 
+
 vector<string> CurrencyRatesService::getContriesMessages() {
     const string content = CurrencyConverterApi::getContries();
     const tuple<int, vector<Country>, string> response = this->parseContriesResponse(&content);
@@ -138,6 +143,52 @@ vector<string> CurrencyRatesService::getContriesMessages() {
         for(Country country : countries) {
             out.push_back(country.msg());
         }
+    }
+    return out;
+}
+
+string CurrencyRatesService::parseInputSearchArgs(const string *arg) {
+    string _arg = (*arg).substr(7);
+    transform(_arg.begin(), _arg.end(), _arg.begin(), ::tolower); //TODO: Move to separate function.
+    return trim(_arg);
+}
+
+vector<string> CurrencyRatesService::getSearchMessages(const string * args)  {
+    vector<string> out;
+    map<u_int , string> results;
+    const string arg = this->parseInputSearchArgs(args);
+    if ( arg.length() > MAX_SEARCH_LENGTH ) {
+        const string content = CurrencyConverterApi::getContries();
+        const tuple<int, vector<Country>, string> response = this->parseContriesResponse(&content);
+        const int status = get<0>(response);
+        const vector<Country> countries = get<1>(response);
+        const string errmsg = get<2>(response);
+        if (status > 0) {
+            out.push_back(errmsg);
+        } else {
+            for (Country country : countries) {
+                string msg = country.forSearch();
+                transform(msg.begin(), msg.end(), msg.begin(), ::tolower);
+                const int position = FuzzyBitapSearch(msg, arg, BITAP_DISTANCE);
+                if(position > -1) {
+                    results.insert(make_pair(position, country.msg()));
+                }
+            }
+            u_int i = 0;
+            for(auto r: results) {
+                i++;
+                if (i <= MAX_OUT_SIZE) {
+                    out.push_back(r.second);
+                } else {
+                    out.push_back("...");
+                    out.push_back("Request returns to many results, make it more specific.");
+                    break;
+                }
+            }
+
+        }
+    } else {
+        out.push_back("The search request must be at least 3 chars long.");
     }
     return out;
 }

@@ -23,8 +23,9 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, "Hi!");
     });
     bot.getEvents().onCommand("help", [&bot](Message::Ptr message) {
-        const string info = "rates - returns rate for curency pair, usage example: /rate usd/rub, rub:eur\n"
-                            "list - returns list of available curencies, and spam a channel. ";
+        const string info = "rates - returns rate for currency pair, usage example: /rate usd/rub, rub:eur;\n"
+                            "search - runs simple search across basic currencies info;\n"
+                            "help - this help info.";
         bot.getApi().sendMessage(message->chat->id, info);
     });
     bot.getEvents().onCommand("rate", [&bot, &crService](Message::Ptr message) {
@@ -32,9 +33,9 @@ int main() {
         const string content = crService.getMessage(&message->text);
         bot.getApi().sendMessage(message->chat->id, content);
     });
-    bot.getEvents().onCommand("list", [&bot, &crService](Message::Ptr message) {
-        Logger::info("List: " + message->text);
-        vector<string> messages = crService.getContriesMessages();
+    bot.getEvents().onCommand("search", [&bot, &crService](Message::Ptr message) {
+        Logger::info("Search: " + message->text);
+        vector<string> messages = crService.getSearchMessages(&message->text);
         for(string content: messages){
             bot.getApi().sendMessage(message->chat->id, content);
         }
