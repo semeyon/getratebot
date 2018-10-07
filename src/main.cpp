@@ -23,7 +23,7 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, "Hi!");
     });
     bot.getEvents().onCommand("help", [&bot](Message::Ptr message) {
-        const string info = "rates - returns rate for currency pair, usage example: /rate usd/rub, rub:eur;\n"
+        const string info = "rate - returns rate for currency pair, usage example: /rate usd/rub, rub:eur;\n"
                             "search - runs simple search across basic currencies info;\n"
                             "help - this help info.";
         bot.getApi().sendMessage(message->chat->id, info);
@@ -65,5 +65,4 @@ int main() {
         }
     }
 
-    return 0;
 }

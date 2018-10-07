@@ -24,7 +24,7 @@ namespace njoy {
         }
 
         static auto initialize_logger(){
-            auto instance = std::make_shared< spdlog::logger >("feedbridge", sink() );
+            auto instance = std::make_shared< spdlog::logger >("getratebot", sink() );
             instance->set_pattern( "[%l] %v" );
 #ifndef NDEBUG
             instance->set_level( spdlog::level::debug );

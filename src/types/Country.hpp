@@ -6,7 +6,6 @@
 #define GETRATEBOT_COUNTRIES_HPP
 
 #include <string>
-#include <fmt/format.h>
 using namespace std;
 
 //{"alpha3":"AFG","currencyId":"AFN","currencyName":"Afghan afghani","currencySymbol":"؋","id":"AF","name":"Afghanistan"}
@@ -21,14 +20,8 @@ struct Country {
     const string id;
 
 public:
-    string msg() {
-        return fmt::format("{0}({1}) – {2}, {3}", this->currencyId, this->currencySymbol, this->currencyName, this->name);
-    }
-
-    string forSearch() {
-        string msg = fmt::format("{0} {1} {2} {3}", this->currencyId, this->currencyName, this->name, this->currencySymbol);
-        return msg;
-    }
+    string msg();
+    string forSearch();
 
 };
 

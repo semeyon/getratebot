@@ -1,6 +1,6 @@
 # Build container
-FROM reo7sp/tgbot-cpp
-MAINTAINER Semeyon Svetliy
+FROM semeyon/tgbot-cpp:latest
+MAINTAINER Semeyon S.
 
 WORKDIR /tmp
 
@@ -19,8 +19,8 @@ RUN cmake . && \
 
 
 # Run container
-FROM reo7sp/tgbot-cpp
-MAINTAINER Semeyon Svetliy
+FROM semeyon/tgbot-cpp:latest
+MAINTAINER Semeyon S.
 
 WORKDIR /usr/getratebot
 

@@ -71,12 +71,16 @@ tuple<int, vector<Rate>, string> CurrencyRatesService::parseRatesResponse(const 
 }
 
 string CurrencyRatesService::getMessage(const string * args) {
+
     const auto joinedArgs = this->parseInputArgs(args);
+
     const string content = CurrencyConverterApi::getRates(&joinedArgs);
+
     const tuple<int, vector<Rate>, string> response = this->parseRatesResponse(&content);
     const int status = get<0>(response);
     const vector<Rate> rates = get<1>(response);
     const string errmsg = get<2>(response);
+
     if (status > 0 ) {
         return errmsg;
     } else {
@@ -131,11 +135,15 @@ tuple<int, vector<Country>, string> CurrencyRatesService::parseContriesResponse(
 
 
 vector<string> CurrencyRatesService::getContriesMessages() {
+
     const string content = CurrencyConverterApi::getContries();
+
     const tuple<int, vector<Country>, string> response = this->parseContriesResponse(&content);
+
     const int status = get<0>(response);
     const vector<Country> countries = get<1>(response);
     const string errmsg = get<2>(response);
+
     vector<string> out;
     if (status > 0 ) {
         out.push_back(errmsg);
@@ -153,13 +161,16 @@ string CurrencyRatesService::parseInputSearchArgs(const string *arg) {
     return trim(_arg);
 }
 
+
 vector<string> CurrencyRatesService::getSearchMessages(const string * args)  {
     vector<string> out;
     map<u_int , string> results;
     const string arg = this->parseInputSearchArgs(args);
     if ( arg.length() > MAX_SEARCH_LENGTH ) {
+
         const string content = CurrencyConverterApi::getContries();
         const tuple<int, vector<Country>, string> response = this->parseContriesResponse(&content);
+
         const int status = get<0>(response);
         const vector<Country> countries = get<1>(response);
         const string errmsg = get<2>(response);
@@ -168,7 +179,7 @@ vector<string> CurrencyRatesService::getSearchMessages(const string * args)  {
         } else {
             for (Country country : countries) {
                 string msg = country.forSearch();
-                transform(msg.begin(), msg.end(), msg.begin(), ::tolower);
+                transform(msg.begin(), msg.end(), msg.begin(), ::tolower);  //TODO: Move to separate function.
                 const int position = FuzzyBitapSearch(msg, arg, BITAP_DISTANCE);
                 if(position > -1) {
                     results.insert(make_pair(position, country.msg()));

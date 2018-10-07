@@ -23,7 +23,7 @@ add_executable(getratebot
         src/services/HttpRequest.cpp src/CurrencyRatesService.cpp
         src/services/CurrencyConverterApi.cpp
         src/types/Rate.hpp
-        src/types/Country.hpp
+        src/types/Country.hpp src/types/Country.cpp
         src/ContriesStorage.cpp
         src/CurrencyRatesService.cpp
 )
