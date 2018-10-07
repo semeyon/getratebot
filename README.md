@@ -2,7 +2,7 @@
 Micro currency rate telegram bot
 
 # Build the project 
-./nuild.sh
+`./build.sh`
 
 # Run the project 
-./run.sh <bot_token>
+`./run.sh <bot_token>`
