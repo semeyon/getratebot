@@ -157,7 +157,7 @@ vector<string> CurrencyRatesService::getContriesMessages() {
 
 string CurrencyRatesService::parseInputSearchArgs(const string *arg) {
     string _arg = (*arg).substr(7);
-    transform(_arg.begin(), _arg.end(), _arg.begin(), ::tolower); //TODO: Move to separate function.
+    StrToLower(_arg);
     return trim(_arg);
 }
 
@@ -179,7 +179,7 @@ vector<string> CurrencyRatesService::getSearchMessages(const string * args)  {
         } else {
             for (Country country : countries) {
                 string msg = country.forSearch();
-                transform(msg.begin(), msg.end(), msg.begin(), ::tolower);  //TODO: Move to separate function.
+                StrToLower(msg);
                 const int position = FuzzyBitapSearch(msg, arg, BITAP_DISTANCE);
                 if(position > -1) {
                     results.insert(make_pair(position, country.msg()));
