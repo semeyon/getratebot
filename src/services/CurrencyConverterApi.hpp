@@ -12,7 +12,7 @@ using namespace std;
 class CurrencyConverterApi {
 
 public:
-    static const string getRates(const string * args);
+    static const string getRates(const string & args);
     static const string getContries();
 
 private:

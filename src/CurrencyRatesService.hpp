@@ -21,9 +21,8 @@ public:
 private:
     string parseInputArgs(const string * args);
     string parseInputSearchArgs(const string * arg);
-    tuple<int, vector<Rate>, string> parseRatesResponse(const string * content);
+    tuple<int, vector<Rate>, string> parseRatesResponse(const string & content);
     tuple<int, vector<Country>, string> parseContriesResponse(const string * content);
-
 };
 
 

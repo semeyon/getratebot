@@ -31,17 +31,17 @@ string CurrencyRatesService::parseInputArgs(const string * args) {
     auto replSlashes = [] (string s) { return reduce( s, "_", "/"); };
     _args = lambda::map(_args, replSlashes);
     string joinedArgs;
-    for (const auto &piece : _args) joinedArgs += ","+piece;
+    for (const auto &piece : _args) joinedArgs += "," + piece;
     return joinedArgs.length() > 1 ? joinedArgs.substr(1) : joinedArgs;
 }
 
-tuple<int, vector<Rate>, string> CurrencyRatesService::parseRatesResponse(const string * content) {
+tuple<int, vector<Rate>, string> CurrencyRatesService::parseRatesResponse(const string & content) {
     int status = 0;
     string error_msg;
     vector<Rate> rates;
     Json::Value root;
     Json::Reader reader;
-    bool parsingSuccessful = reader.parse(content->c_str(), root );
+    bool parsingSuccessful = reader.parse(content.c_str(), root );
     if ( !parsingSuccessful ) {
         Logger::info("Failed to parse: " + reader.getFormattedErrorMessages());
         status = 1;
@@ -51,6 +51,7 @@ tuple<int, vector<Rate>, string> CurrencyRatesService::parseRatesResponse(const 
             status = 2;
             error_msg = root.get("error", "").asString();
         } else {
+
             string out;
             for (Json::Value::const_iterator it=root.begin(); it!=root.end(); ++it) {
                 Rate rate = {
@@ -60,6 +61,7 @@ tuple<int, vector<Rate>, string> CurrencyRatesService::parseRatesResponse(const 
                 };
                 rates.push_back(rate);
             }
+
             if (rates.size() == 0){
                 status = 3;
                 error_msg = "There are no currency pair";
@@ -74,12 +76,12 @@ string CurrencyRatesService::getMessage(const string * args) {
 
     const auto joinedArgs = this->parseInputArgs(args);
 
-    const string content = CurrencyConverterApi::getRates(&joinedArgs);
+    const string content = CurrencyConverterApi::getRates(joinedArgs);
 
-    const tuple<int, vector<Rate>, string> response = this->parseRatesResponse(&content);
-    const int status = get<0>(response);
+    const tuple<int, vector<Rate>, string> response = this->parseRatesResponse(content);
+    const int status         = get<0>(response);
     const vector<Rate> rates = get<1>(response);
-    const string errmsg = get<2>(response);
+    const string errmsg      = get<2>(response);
 
     if (status > 0 ) {
         return errmsg;
@@ -108,6 +110,7 @@ tuple<int, vector<Country>, string> CurrencyRatesService::parseContriesResponse(
             status = 2;
             error_msg = root.get("error", "").asString();
         } else {
+
             const Json::Value& results = root["results"];
             string out;
             for (Json::Value::const_iterator it=results.begin(); it!=results.end(); ++it) {
@@ -123,6 +126,7 @@ tuple<int, vector<Country>, string> CurrencyRatesService::parseContriesResponse(
                 };
                 countries.push_back(country);
             }
+
             if (countries.size() == 0){
                 status = 3;
                 error_msg = "There are no currency pair";
@@ -140,17 +144,19 @@ vector<string> CurrencyRatesService::getContriesMessages() {
 
     const tuple<int, vector<Country>, string> response = this->parseContriesResponse(&content);
 
-    const int status = get<0>(response);
+    const int status                = get<0>(response);
     const vector<Country> countries = get<1>(response);
-    const string errmsg = get<2>(response);
+    const string errmsg             = get<2>(response);
 
     vector<string> out;
     if (status > 0 ) {
         out.push_back(errmsg);
     } else {
+
         for(Country country : countries) {
             out.push_back(country.msg());
         }
+
     }
     return out;
 }
@@ -171,12 +177,13 @@ vector<string> CurrencyRatesService::getSearchMessages(const string * args)  {
         const string content = CurrencyConverterApi::getContries();
         const tuple<int, vector<Country>, string> response = this->parseContriesResponse(&content);
 
-        const int status = get<0>(response);
+        const int status                = get<0>(response);
         const vector<Country> countries = get<1>(response);
-        const string errmsg = get<2>(response);
+        const string errmsg             = get<2>(response);
         if (status > 0) {
             out.push_back(errmsg);
         } else {
+
             for (Country country : countries) {
                 string msg = country.forSearch();
                 StrToLower(msg);
@@ -196,6 +203,7 @@ vector<string> CurrencyRatesService::getSearchMessages(const string * args)  {
                     break;
                 }
             }
+
 
         }
     } else {
