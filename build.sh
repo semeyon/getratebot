@@ -1,1 +1,1 @@
- docker build -t semeyon/getratebot:0.5 .
+ docker build -t semeyon/getratebot:0.7 .
