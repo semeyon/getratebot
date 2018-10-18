@@ -40,7 +40,7 @@ template <class T>
 tuple<int, vector<T>, string> CurrencyRatesService::parseResponse(const string *content, auto lambda) {
     int status = 0;
     string error_msg;
-    vector<Country> countries;
+    vector<T> entities;
     Json::Value root;
     Json::Reader reader;
     bool parsingSuccessful = reader.parse(content->c_str(), root );
@@ -53,67 +53,36 @@ tuple<int, vector<T>, string> CurrencyRatesService::parseResponse(const string *
             status = 2;
             error_msg = root.get("error", "").asString();
         } else {
-            countries = lambda(root);
-            if (countries.size() == 0){
+            entities = lambda(root);
+            if (entities.size() == 0){
                 status = 3;
                 error_msg = "There are no data";
             }
         }
     }
-    tuple<int, vector<T>, string> response(status, countries, error_msg);
-    return response;
-}
-
-
-tuple<int, vector<Rate>, string> CurrencyRatesService::parseRatesResponse(const string & content) {
-    int status = 0;
-    string error_msg;
-    vector<Rate> rates;
-    Json::Value root;
-    Json::Reader reader;
-    bool parsingSuccessful = reader.parse(content.c_str(), root );
-    if ( !parsingSuccessful ) {
-        Logger::info("Failed to parse: " + reader.getFormattedErrorMessages());
-        status = 1;
-        error_msg = "There are not such currency or services is not responding, try later";
-    } else {
-        if ( root.isMember("error") ) {
-            status = 2;
-            error_msg = root.get("error", "").asString();
-        } else {
-
-            string out;
-            for (Json::Value::const_iterator it=root.begin(); it!=root.end(); ++it) {
-                Rate rate = {
-                        it.key().asString().substr(0, 3),
-                        it.key().asString().substr(4),
-                        it->asFloat()
-                };
-                rates.push_back(rate);
-            }
-
-            if (rates.size() == 0){
-                status = 3;
-                error_msg = "There are no currency pair";
-            }
-        }
-    }
-    tuple<int, vector<Rate>, string> response(status, rates, error_msg);
+    tuple<int, vector<T>, string> response(status, entities, error_msg);
     return response;
 }
 
 
 string CurrencyRatesService::getMessage(const string * args) {
-
     const auto joinedArgs = this->parseInputArgs(* args);
-
     const string content = CurrencyConverterApi::getRates(joinedArgs);
-
-    const tuple<int, vector<Rate>, string> response = this->parseRatesResponse(content);
+    const tuple<int, vector<Rate>, string> response = this->parseResponse<Rate>(&content, [](Json::Value root) {
+        vector<Rate> rates;
+        for (Json::Value::const_iterator it=root.begin(); it!=root.end(); ++it) {
+            Rate rate = {
+                    it.key().asString().substr(0, 3),
+                    it.key().asString().substr(4),
+                    it->asFloat()
+            };
+            rates.push_back(rate);
+        }
+        return rates;
+    });
     const int status         = get<0>(response);
     const vector<Rate> rates = get<1>(response);
     const string errmsg      = get<2>(response);
-
     if (status > 0 ) {
         return errmsg;
     } else {
@@ -146,7 +115,6 @@ vector<string> CurrencyRatesService::getContriesMessages() {
         }
         return countries;
     });
-
     const int status                = get<0>(response);
     const vector<Country> countries = get<1>(response);
     const string errmsg             = get<2>(response);
