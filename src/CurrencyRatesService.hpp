@@ -19,11 +19,10 @@ public:
     vector<string> getSearchMessages(const string * args);
 
 private:
-    string parseInputArgs(const string * args);
+    string parseInputArgs(const string & args);
     string parseInputSearchArgs(const string * arg);
-    tuple<int, vector<Rate>, string> parseRatesResponse(const string * content);
-    tuple<int, vector<Country>, string> parseContriesResponse(const string * content);
-
+    template <class T>
+    tuple<int, vector<T>, string>  parseResponse(const string *content, auto lambda);
 };
 
 

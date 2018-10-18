@@ -121,3 +121,7 @@ static int FuzzyBitapSearch(std::string text, std::string pattern, unsigned int 
     free(R);
     return result;
 }
+
+void StrToLower(std::string &msg) {
+    transform(msg.begin(), msg.end(), msg.begin(), ::tolower);
+}

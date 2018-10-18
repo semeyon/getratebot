@@ -5,8 +5,8 @@
 #include "HttpRequest.hpp"
 #include "CurrencyConverterApi.hpp"
 
-const string CurrencyConverterApi::getRates(const string * args) {
-    string url = CurrencyConverterApi::convert_url + (*args);
+const string CurrencyConverterApi::getRates(const string & args) {
+    string url = CurrencyConverterApi::convert_url + args;
     return HttpRequest::get(&url);
 }
 
